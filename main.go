@@ -64,8 +64,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		log.Println("invlide type file")
 		return
 	}
-	// w.Header().Set("Content-Type", "iamge/jpg")
-	w.Header().Set("Content-Disposition", "attachment; filename=\"output.jpg\"")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s-output.jpg\"", fileHandler.Filename))
 	w.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
