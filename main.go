@@ -64,7 +64,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		log.Println("invlide type file")
 		return
 	}
-	w.Header().Set("Content-Type", mimeType)
+	w.Header().Set("Content-Type", "image/jpeg")
 	w.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
