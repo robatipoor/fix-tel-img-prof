@@ -65,6 +65,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	contDispos := fmt.Sprintf("attachment; filename=\"%s\"", outputName(fileHandler.Filename))
+	w.Header().Set("Content-Type", "image/jpeg")
 	w.Header().Set("Content-Disposition", contDispos)
 	w.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	w.WriteHeader(http.StatusOK)
