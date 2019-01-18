@@ -64,7 +64,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		log.Println("invlide type file")
 		return
 	}
-	w.Header().Set("Content-Type", "image/jpeg")
+	w.Header().Set("Content-Type", "image/jpg")
 	w.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
@@ -95,7 +95,14 @@ func fixSizeImage(b []byte) ([]byte, error) {
 	img = imaging.PasteCenter(bgImage, resizeImg)
 	var buf bytes.Buffer
 	writer := bufio.NewWriter(&buf)
-	err = imaging.Encode(writer, img, imaging.JPEG)
+	var format imaging.Format
+	switch f {
+	case "jpeg", "jpg":
+		format = imaging.JPEG
+	case "png":
+		format = imaging.PNG
+	}
+	err = imaging.Encode(writer, img, format)
 	if err != nil {
 		log.Println(err)
 		return nil, err
