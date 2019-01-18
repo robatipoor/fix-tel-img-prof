@@ -21,7 +21,7 @@ var port string
 var addr string
 
 func init() {
-	port = os.Getenv("POST")
+	port = os.Getenv("PORT")
 	addr = ""
 }
 
@@ -29,8 +29,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("public")))
 	mux.HandleFunc("/upload", upload)
-	log.Println("Start Sever ... ")
-	log.Fatalln(http.ListenAndServe(fmt.Sprintf("%s:%s", addr, port), mux))
+	address := fmt.Sprintf("%s:%s", addr, port)
+	log.Println("Start Sever ... ", address)
+	log.Fatalln(http.ListenAndServe(address, mux))
 }
 
 // UploadFile uploads a file to the server
@@ -68,6 +69,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 }
+
 // resize image to fix telegram profile image
 func fixSizeImage(b []byte) ([]byte, error) {
 	read := bytes.NewReader(b)
@@ -100,6 +102,7 @@ func fixSizeImage(b []byte) ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
+
 // read image file form fs
 func readFile(filename string) ([]byte, error) {
 	b, err := ioutil.ReadFile(filename)
@@ -109,6 +112,7 @@ func readFile(filename string) ([]byte, error) {
 	}
 	return b, nil
 }
+
 // write image file to fs
 func writeFile(filename string, b []byte) (int, error) {
 	f, err := os.Create(filename)
@@ -124,7 +128,8 @@ func writeFile(filename string, b []byte) (int, error) {
 	}
 	return n, nil
 }
-// resize all image in root directory 
+
+// resize all image in root directory
 func reSizeAllImageDir(root string) error {
 	var files []string
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
