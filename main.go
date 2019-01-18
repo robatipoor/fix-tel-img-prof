@@ -64,7 +64,8 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		log.Println("invlide type file")
 		return
 	}
-	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s-output.jpg\"", fileHandler.Filename))
+	contDispos := fmt.Sprintf("attachment; filename=\"%s\"", outputName(fileHandler.Filename))
+	w.Header().Set("Content-Disposition", contDispos)
 	w.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
@@ -151,14 +152,18 @@ func reSizeAllImageDir(root string) error {
 			log.Println(err)
 			return err
 		}
-		ext := filepath.Ext(path)
-		output := strings.TrimSuffix(path, ext)
-		output = fmt.Sprintf("%s%s%s", output, "-resize", ext)
-		_, err = writeFile(output, b)
+		_, err = writeFile(outputName(path), b)
 		if err != nil {
 			log.Println(err)
 			return err
 		}
 	}
 	return nil
+}
+
+func outputName(path string) string {
+	ext := filepath.Ext(path)
+	output := strings.TrimSuffix(path, ext)
+	output = fmt.Sprintf("%s%s%s", output, "-resize", ext)
+	return output
 }
